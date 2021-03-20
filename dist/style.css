@@ -1,0 +1,41 @@
+html {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  background-color: #F1FAEE;
+}
+
+main {
+  width: 600px;
+  margin: 0 auto;
+}
+
+header {
+  background-color: #457B9D;
+  color: #ffffff;
+  font-size: 1rem;
+  padding: 1.5rem 2rem;
+  border-radius: 0.25rem;
+  border: 1px solid #1D3557;
+}
+
+.caption {
+  margin-bottom: 2rem;
+}
+
+h1 {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+.server-selector {
+  display: flex;
+  align-items: center;
+}
+
+.server-selector select {
+  font-size: 1rem;
+  padding: 0.25rem;
+}
