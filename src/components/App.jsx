@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import ServerSelector from './ServerSelector.jsx';
 import LevelSelector from './LevelSelector.jsx';
+import GridSVG from './GridSVG.jsx';
 
 
 const App = () => {
@@ -19,6 +20,9 @@ const App = () => {
       <ServerSelector/>
       <LevelSelector/>
     </header>
+
+    <GridSVG
+    />
   </Router>);
 };
 
