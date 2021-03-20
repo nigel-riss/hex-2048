@@ -1,9 +1,15 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
 import ServerSelector from './ServerSelector.jsx';
+import LevelSelector from './LevelSelector.jsx';
 
 
 const App = () => {
-  return (<>
+  return (<Router>
     <header>
       <div className="caption">
         <h1>Hexagonal 2048</h1>
@@ -11,8 +17,9 @@ const App = () => {
       </div>
 
       <ServerSelector/>
+      <LevelSelector/>
     </header>
-  </>);
+  </Router>);
 };
 
 

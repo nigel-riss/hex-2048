@@ -1,21 +1,34 @@
 html {
+  --light: #f1faee;
+  --light-blue: #a8dadc;
+  --blue: #457b9d;
+  --dark-blue: #1d3557;
+  --orange: #dc965a;
+  --dark-orange: #764419;
+  --dark: #110a04;
+
+  min-height: 100%;
+  color: var(--dark);
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
-  background-color: #F1FAEE;
+  background-color: var(--light);
+  background-image: linear-gradient(var(--light-blue), var(--light));
 }
 
 main {
+  height: 100%;
   width: 600px;
   margin: 0 auto;
+  padding: 1rem 0;
 }
 
 header {
-  background-color: #457B9D;
+  background-color: var(--blue);
   color: #ffffff;
   font-size: 1rem;
   padding: 1.5rem 2rem;
   border-radius: 0.25rem;
-  border: 1px solid #1D3557;
+  border: 1px solid var(--dark-blue);
 }
 
 .caption {
@@ -30,12 +43,38 @@ p {
   margin: 0;
 }
 
+
 .server-selector {
   display: flex;
   align-items: center;
+  margin-bottom: 1rem;
+}
+
+.server-selector p {
+  margin-right: 1rem;
 }
 
 .server-selector select {
   font-size: 1rem;
   padding: 0.25rem;
+}
+
+
+.level-selector {
+  display: flex;
+  align-items: center;
+}
+
+.level-selector p {
+  margin-right: 1rem;
+}
+
+.level-selector__link {
+  margin-right: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--orange);
+  color: var(--dark);
+  border: 1px solid var(--dark-orange);
+  text-decoration: none;
 }

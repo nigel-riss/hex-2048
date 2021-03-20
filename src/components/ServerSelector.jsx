@@ -4,7 +4,7 @@ import React from 'react';
 const ServerSelector = (props) => {
   return (
     <div className="server-selector">
-      <p>RNG Server:&nbsp;</p>
+      <p>RNG Server: </p>
       <select
         id="url-server"
         onChange={(e) => {
