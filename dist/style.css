@@ -78,3 +78,18 @@ p {
   border: 1px solid var(--dark-orange);
   text-decoration: none;
 }
+
+.layout-grid {
+  position: relative;
+  width: 600px;
+  height: 600px;
+}
+
+.hex {
+  position: absolute;
+}
+
+.hex svg {
+  height: 100%;
+  width: 100%;
+}
