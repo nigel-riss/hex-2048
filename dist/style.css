@@ -6,6 +6,8 @@ html {
   --orange: #dc965a;
   --dark-orange: #764419;
   --dark: #110a04;
+  --crimson: #cc5a5a;
+  --green: #469e4e;
 
   min-height: 100%;
   color: var(--dark);
@@ -29,6 +31,7 @@ header {
   padding: 1.5rem 2rem;
   border-radius: 0.25rem;
   border: 1px solid var(--dark-blue);
+  margin-bottom: 20px;
 }
 
 .caption {
@@ -81,8 +84,7 @@ p {
 
 .layout-grid {
   position: relative;
-  width: 600px;
-  height: 600px;
+  margin: 0 auto;
 }
 
 .hex {
@@ -92,4 +94,22 @@ p {
 .hex svg {
   height: 100%;
   width: 100%;
+}
+
+.x-coord {
+  fill: var(--blue);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.y-coord {
+  fill: var(--crimson);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.z-coord {
+  fill: var(--green);
+  font-size: 1.5rem;
+  font-weight: 600;
 }

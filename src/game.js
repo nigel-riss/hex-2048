@@ -5,11 +5,13 @@ class Game {
   }
 
   init(size) {
+    this.size = size;
     this.cells = [];
+    const radius = size - 1;
 
-    for (let x = -size; x <= size; x++) {
-      for (let y = -size; y <= size; y++) {
-        for (let z = -size; z <= size; z++) {  // TODO: Optimize here
+    for (let x = -radius; x <= radius; x++) {
+      for (let y = -radius; y <= radius; y++) {
+        for (let z = -radius; z <= radius; z++) {  // TODO: Optimize here
           if ((x + y + z) === 0) {
             this.cells.push({
               x,
@@ -22,7 +24,7 @@ class Game {
       }
     }
 
-    console.log(cells);
+    console.log(this.cells);
   }
 
   getCells() {
@@ -33,11 +35,18 @@ class Game {
     return this.cells.filter(cell => cell.value && cell.value > 0);
   }
 
-  getServerData() {
-    
+  getSize() {
+    return this.size;
+  }
+
+  fetchServerData() {
+
   }
 
   turn(direction) {
 
   }
 }
+
+
+export default Game;

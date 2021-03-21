@@ -9,7 +9,11 @@ import LevelSelector from './LevelSelector.jsx';
 import GridLayout from './GridLayout.jsx';
 
 
-const App = () => {
+const App = (props) => {
+  const {
+    game,
+  } = props;
+
   return (<Router>
     <header>
       <div className="caption">
@@ -22,7 +26,8 @@ const App = () => {
     </header>
 
     <GridLayout
-      size={2}
+      cells={game.getCells()}
+      size={game.getSize()}
     />
   </Router>);
 };
