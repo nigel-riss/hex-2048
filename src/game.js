@@ -13,11 +13,12 @@ class Game {
       for (let y = -radius; y <= radius; y++) {
         for (let z = -radius; z <= radius; z++) {  // TODO: Optimize here
           if ((x + y + z) === 0) {
+            const rndValue = 1 << Math.floor(Math.random() * 16);
             this.cells.push({
               x,
               y,
               z,
-              value: 0,
+              value: rndValue !== 1 ? rndValue : 0,
             });
           }
         }

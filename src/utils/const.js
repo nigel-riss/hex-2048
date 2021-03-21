@@ -1,5 +1,7 @@
 const GAME_FIELD_WIDTH = 560;
+const FONT_SIZE_RATIO = 70;
 
 export {
+  FONT_SIZE_RATIO,
   GAME_FIELD_WIDTH,
 };

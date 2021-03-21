@@ -21,8 +21,10 @@ const App = (props) => {
         <p>Test task for Evolution TS bootcamp</p>
       </div>
 
-      <ServerSelector/>
-      <LevelSelector/>
+      <div className="controls">
+        <LevelSelector/>
+        <ServerSelector/>
+      </div>
     </header>
 
     <GridLayout

@@ -7,7 +7,7 @@ import Game from './game.js';
 const rootEl = document.querySelector(`#root`);
 const game = new Game();
 
-console.log(game.init(3));
+console.log(game.init(6));
 
 ReactDOM.render(
   <App

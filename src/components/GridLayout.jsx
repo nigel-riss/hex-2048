@@ -41,6 +41,8 @@ const GridLayout = (props) => {
           value={cell.value}
           radius={GAME_FIELD_WIDTH / (3 * size - 1)}
           key={`${cell.x}-${cell.y}-${cell.z}`}
+          isDisplayLabel
+          isDisplayCoords
         />
       ))}
     </div>
