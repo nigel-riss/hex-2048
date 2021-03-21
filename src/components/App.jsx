@@ -18,7 +18,6 @@ const App = (props) => {
         path={`/`}
         render={({location}) => {
           const size = location.hash.replace(/\D/g, ``) || 2;
-          console.log(size);
           return <Game
             gameEngine={gameEngine}
             size={size}

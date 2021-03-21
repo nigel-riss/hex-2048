@@ -28,6 +28,7 @@ class GameEngine {
     this._initCells();
 
     window.addEventListener(`keyup`, this._keyboardInputHandler);
+    console.log(`Initializing game`, size, serverURL);
   }
 
   _initCells() {

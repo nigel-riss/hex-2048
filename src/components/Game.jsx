@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {Servers} from '../utils/const.js';
 import ServerSelector from './ServerSelector.jsx';
 import LevelSelector from './LevelSelector.jsx';
 import GridLayout from './GridLayout.jsx';
@@ -11,11 +12,12 @@ const Game = (props) => {
   } = props;
 
   const [cells, setCells] = useState([]);
+  const [serverUrl, setServerUrl] = useState(Servers[`remote`].url);
 
   useEffect(() => {
-    gameEngine.init(size, setCells);
+    gameEngine.init(size, setCells, serverUrl);
     setCells(gameEngine.getCells());
-  }, [size]);
+  }, [size, serverUrl]);
 
   return (<>
     <header>
@@ -26,7 +28,12 @@ const Game = (props) => {
 
       <div className="controls">
         <LevelSelector/>
-        <ServerSelector/>
+        <ServerSelector
+          servers={Servers}
+          onServerSelect={(serverUrl) => {
+            setServerUrl(serverUrl);
+          }}
+        />
       </div>
     </header>
 

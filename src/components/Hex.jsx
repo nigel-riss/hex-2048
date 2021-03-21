@@ -12,7 +12,6 @@ import {
 
 const getPosition = (x, y, z, size) => {
   const center = hexToPixel({x, y, z, size});
-  console.log(center);
   return {
     top: center.pixelY,
     left: center.pixelX,
