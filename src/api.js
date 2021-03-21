@@ -1,11 +1,12 @@
-const postData = async (url = ``, data = []) => {
-  const response = await fetch(url, {
+const postData = async (url, size, data = []) => {
+  console.log(JSON.stringify(data));
+  const response = await fetch(`${url}/${size}`, {
     method: `POST`,
-    cache: `no-cache`,
     headers: {
       'Content-Type': `application/json`,
     },
-    body: JSON.stringify(data)
+    // body: JSON.stringify(data),
+    body: `[]`,
   });
 
   return await response.json();

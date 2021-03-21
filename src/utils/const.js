@@ -7,7 +7,7 @@ const Servers = {
     title: `Remote Server`,
   },
   'localhost': {
-    url: `http://localhost:13337/`,
+    url: `http://localhost:13337`,
     title: `Local Server`,
   },
 };

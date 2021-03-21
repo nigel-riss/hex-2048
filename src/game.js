@@ -22,6 +22,7 @@ class GameEngine {
   init(size, viewUpdater, serverURL) {
     this._size = size;
     this._viewUpdater = viewUpdater;
+    this._serverURL = serverURL;
 
     window.removeEventListener(`keyup`, this._keyboardInputHandler);
 
@@ -29,6 +30,8 @@ class GameEngine {
 
     window.addEventListener(`keyup`, this._keyboardInputHandler);
     console.log(`Initializing game`, size, serverURL);
+
+    this._fetchServerData();
   }
 
   _initCells() {
@@ -40,7 +43,7 @@ class GameEngine {
       for (let y = -radius; y <= radius; y++) {
         for (let z = -radius; z <= radius; z++) {  // TODO: Can be optimized here
           if ((x + y + z) === 0) {
-            const rndValue = 1 << Math.floor(Math.random() * 16);
+            const rndValue = 1 << Math.floor(Math.random() * 4);
             this._cells.push({
               x,
               y,
@@ -72,7 +75,7 @@ class GameEngine {
     return this._cells;
   }
 
-  getNonEmptyCells() {
+  _getNonEmptyCells() {
     return this._cells.filter(cell => cell.value && cell.value > 0);
   }
 
@@ -80,8 +83,11 @@ class GameEngine {
     return this._size;
   }
 
-  fetchServerData() {
-
+  _fetchServerData() {
+    postData(this._serverURL, this._size, this._getNonEmptyCells())
+      .then((response) => {
+        console.log(response);
+      })
   }
 
   turn(direction) {
