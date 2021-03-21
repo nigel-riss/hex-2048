@@ -87,6 +87,9 @@ class GameEngine {
     postData(this._serverURL, this._size, this._getNonEmptyCells())
       .then((response) => {
         console.log(response);
+        this._cells.concat(response);
+        this._cells = [...this._cells, ...response];
+        this._viewUpdater(this._cells.slice());
       })
   }
 
