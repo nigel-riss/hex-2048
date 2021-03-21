@@ -1,17 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App.jsx';
-import Game from './game.js';
+import GameEngine from './game.js';
 
 
 const rootEl = document.querySelector(`#root`);
-const game = new Game();
-
-console.log(game.init(4));
+const game = new GameEngine();
 
 ReactDOM.render(
   <App
-    game={game}
+    gameEngine={game}
   />,
   rootEl,
 );

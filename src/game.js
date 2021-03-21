@@ -1,32 +1,51 @@
 import {postData} from './api.js';
 
 
-class Game {
+const Direction = {
+  'Q': {x: -1, y: 1,  z: 0},
+  'W': {x: 0,  y: 1,  z: -1},
+  'E': {x: 1,  y: 0,  z: -1},
+  'A': {x: -1, y: 0,  z: 1},
+  'S': {x: 0,  y: -1, z: 1},
+  'D': {x: 1,  y: -1, z: 0},
+};
+
+
+class GameEngine {
   constructor() {
-    this.cells = null;
+    this._cells = null;
+    this._size = null;
+    this._viewUpdater = null;
+    this._serverURL = null;
   }
 
-  init(size) {
-    this.size = size;
+  init(size, viewUpdater, serverURL) {
+    this._size = size;
+    this._viewUpdater = viewUpdater;
+
+    window.removeEventListener(`keyup`, this._keyboardInputHandler);
 
     this._initCells();
 
-    window.addEventListener(`keydown`, this._keyboardInputHandler);
+    window.addEventListener(`keyup`, this._keyboardInputHandler);
   }
 
   _initCells() {
-    this.cells = [];
-    const radius = this.size - 1;
+    this._cells = [];
+
+    const radius = this._size - 1;
+
     for (let x = -radius; x <= radius; x++) {
       for (let y = -radius; y <= radius; y++) {
         for (let z = -radius; z <= radius; z++) {  // TODO: Can be optimized here
           if ((x + y + z) === 0) {
             const rndValue = 1 << Math.floor(Math.random() * 16);
-            this.cells.push({
+            this._cells.push({
               x,
               y,
               z,
-              value: rndValue !== 1 ? rndValue : 0,
+              value: 0,
+              // value: rndValue !== 1 ? rndValue : 0,
             });
           }
         }
@@ -35,19 +54,29 @@ class Game {
   }
 
   _keyboardInputHandler = (e) => {
-    console.log(e.key);
+    const normalKey = e.key.toUpperCase();
+    const validKeys = Object.keys(Direction);
+    const isValidKey = validKeys.includes(normalKey);
+    if (isValidKey) {
+      this.turn(normalKey);
+    }
+  }
+
+  findCell({x, y, z}) {
+    return this._cells
+      .find(cell => cell.x === x && cell.y === y && cell.z === z);
   }
 
   getCells() {
-    return this.cells;
+    return this._cells;
   }
 
   getNonEmptyCells() {
-    return this.cells.filter(cell => cell.value && cell.value > 0);
+    return this._cells.filter(cell => cell.value && cell.value > 0);
   }
 
   getSize() {
-    return this.size;
+    return this._size;
   }
 
   fetchServerData() {
@@ -55,17 +84,21 @@ class Game {
   }
 
   turn(direction) {
-    // 3. Wait input
+    // 1. Wait input
+    const currCell = this.findCell(Direction[direction]);
+    currCell.value++;
+    console.log(Direction[direction]);
+    this._viewUpdater(this._cells.slice());
 
-    // 4. Shift cells
+    // 2. Shift cells
 
-    // 1. Request data
+    // 3. Request data
 
-    // 2. Update field
+    // 4. Update field
 
-    // ?. Check if possible moves
+    // 5. Check if possible moves
   }
 }
 
 
-export default Game;
+export default GameEngine;
