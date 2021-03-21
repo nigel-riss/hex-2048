@@ -1,3 +1,5 @@
+import {postData} from './api.js';
+
 
 class Game {
   constructor() {
@@ -6,12 +8,18 @@ class Game {
 
   init(size) {
     this.size = size;
-    this.cells = [];
-    const radius = size - 1;
 
+    this._initCells();
+
+    window.addEventListener(`keydown`, this._keyboardInputHandler);
+  }
+
+  _initCells() {
+    this.cells = [];
+    const radius = this.size - 1;
     for (let x = -radius; x <= radius; x++) {
       for (let y = -radius; y <= radius; y++) {
-        for (let z = -radius; z <= radius; z++) {  // TODO: Optimize here
+        for (let z = -radius; z <= radius; z++) {  // TODO: Can be optimized here
           if ((x + y + z) === 0) {
             const rndValue = 1 << Math.floor(Math.random() * 16);
             this.cells.push({
@@ -24,8 +32,10 @@ class Game {
         }
       }
     }
+  }
 
-    console.log(this.cells);
+  _keyboardInputHandler = (e) => {
+    console.log(e.key);
   }
 
   getCells() {
@@ -45,7 +55,15 @@ class Game {
   }
 
   turn(direction) {
+    // 3. Wait input
 
+    // 4. Shift cells
+
+    // 1. Request data
+
+    // 2. Update field
+
+    // ?. Check if possible moves
   }
 }
 
