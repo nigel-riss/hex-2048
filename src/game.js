@@ -36,27 +36,27 @@ class GameEngine {
     this._size = null;
     this._viewUpdater = null;
     this._serverURL = null;
-    this._canInput = false;
   }
-
+  
   init(size, viewUpdater, serverURL) {
+    this._canInput = false;
     this._size = size;
     this._viewUpdater = viewUpdater;
     this._serverURL = serverURL;
+    console.log(`Initializing game`, size, serverURL);
 
     window.removeEventListener(`keyup`, this._keyboardInputHandler);
+    window.addEventListener(`keyup`, this._keyboardInputHandler);
 
     this._initCells();
-    this._viewUpdater(this._cells.slice());
-
-    window.addEventListener(`keyup`, this._keyboardInputHandler);
-    console.log(`Initializing game`, size, serverURL);
     this._gameStatus = GameStatus.PLAYING;
-
     this._viewUpdater(this._cells.slice());
 
     this._fetchServerData()
       .then(this._appendServerData)
+      .then(() => {
+        this._canInput = true;
+      })
       .catch((err) => {
         console.log(err);
         this._gameStatus = GameStatus.NETWORK_ERROR;
@@ -114,7 +114,6 @@ class GameEngine {
       }
     });
     this._viewUpdater(this._cells.slice());
-    this._canInput = true;
   }
 
   turn(direction) {
@@ -164,12 +163,17 @@ class GameEngine {
           }
         }
       }
+    this._canInput = true;
     }
 
-    if (isValidMove) {
-      this._viewUpdater(this._cells.slice());
+    const isCanPlay = this._checkIfCanPlay();
+    this._gameStatus = isCanPlay ? GameStatus.PLAYING : GameStatus.GAME_OVER;
 
-      // // 3. Request data
+    if (isValidMove && isCanPlay) {
+      this._viewUpdater(this._cells.slice());
+      this._gameStatus = GameStatus.PLAYING;
+
+      // 3. Request data
       this._fetchServerData()
         .then(this._appendServerData)
         .then(() => {
@@ -179,11 +183,15 @@ class GameEngine {
           // 5. Unlock cells
           this._unlockCells();
           this._canInput = true;
+        })
+        .catch((err) => {
+          console.log(err);
+          this._gameStatus = GameStatus.NETWORK_ERROR;
+          this._viewUpdater(this._cells.slice());
         });
     }
 
-    // 6. Check if possible moves
-    this._checkGameOver();
+    this._viewUpdater(this._cells);
   }
 
 
@@ -192,16 +200,11 @@ class GameEngine {
   }
 
 
-  _checkGameOver() {
-    const isMovesAvail = this._cells
+  _checkIfCanPlay() {
+    return this._cells
       .reduce((acc, cell) => {
         return acc || this._checkAvailNeighbours(cell);
       }, false);
-
-    if (!isMovesAvail) {
-      this._gameStatus = GameStatus.GAME_OVER;
-      this._viewUpdater(this._cells);
-    }
   }
 
   _checkAvailNeighbours(cell) {
