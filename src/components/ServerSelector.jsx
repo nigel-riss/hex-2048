@@ -21,6 +21,7 @@ const ServerSelector = (props) => {
           <option
             id={id}
             value={servers[id].url}
+            key={id}
           >
             {servers[id].title}
           </option>

@@ -10,6 +10,18 @@ const Direction = {
   'D': {x: 1,  y: -1, z: 0},
 };
 
+const calcCoord = (offset, shift, distance) => {
+  switch(offset) {
+    case 0:
+      return distance;
+    case 1:
+      return shift;
+    case -1:
+      return -distance-shift;
+  }
+}
+
+const wait = (timeout) => new Promise(resolve => setTimeout(resolve, timeout));
 
 class GameEngine {
   constructor() {
@@ -49,7 +61,6 @@ class GameEngine {
               y,
               z,
               value: 0,
-              // value: rndValue !== 1 ? rndValue : 0,
             });
           }
         }
@@ -87,26 +98,72 @@ class GameEngine {
     postData(this._serverURL, this._size, this._getNonEmptyCells())
       .then((response) => {
         console.log(response);
-        this._cells.concat(response);
-        this._cells = [...this._cells, ...response];
+        response.forEach(cell => {
+          const currCell = this.findCell(cell);
+          if (currCell.value === 0) {
+            currCell.value = cell.value;
+          }
+        });
         this._viewUpdater(this._cells.slice());
-      })
+      });
   }
+
 
   turn(direction) {
     // 1. Wait input
-    const currCell = this.findCell(Direction[direction]);
-    currCell.value++;
-    console.log(Direction[direction]);
-    this._viewUpdater(this._cells.slice());
+    const dirCoords = (Direction[direction]);
 
     // 2. Shift cells
+    for (let i = 0; i < this._size * 2 - 1; i++) {
+      for (let q = this._size - 1; q > -this._size; q--) {
+        for (let r = this._size - 1; r > - this._size; r--) {
+          const coords = {
+            x: calcCoord(dirCoords.x, r, q),
+            y: calcCoord(dirCoords.y, r, q),
+            z: calcCoord(dirCoords.z, r, q),
+          };
+          const currentCell = this.findCell(coords);
+          if (!currentCell) { continue }
 
+          const neightbourCoords = {
+            x: currentCell.x - dirCoords.x,
+            y: currentCell.y - dirCoords.y,
+            z: currentCell.z - dirCoords.z,
+          }
+          const neightbourCell = this.findCell(neightbourCoords);
+          if (!neightbourCell) { continue }
+
+          if (currentCell.value === 0 && neightbourCell.value !== 0) {
+            currentCell.value = neightbourCell.value;
+            neightbourCell.value = 0;
+          }
+
+          if (currentCell.value === neightbourCell.value) {
+            currentCell.value += neightbourCell.value;
+            neightbourCell.value = 0;
+          }
+        }
+      }
+    }
+
+    this._viewUpdater(this._cells.slice());
+    
     // 3. Request data
-
+    this._fetchServerData();
+    
     // 4. Update field
-
+    this._viewUpdater(this._cells.slice());
+    
     // 5. Check if possible moves
+  }
+
+  _multiplyCellPos(cell, ratio) {
+    return {
+      x: cell.x * ratio,
+      y: cell.y * ratio,
+      z: cell.z * ratio,
+      value: cell.value,
+    };
   }
 }
 
