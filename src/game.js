@@ -10,6 +10,12 @@ const Direction = {
   'D': {x: 1,  y: -1, z: 0},
 };
 
+const GameStatus = {
+  PLAYING: `playing`,
+  GAME_OVER: `game-over`,
+  NETWORK_ERROR: `network-error`,
+};
+
 const calcCoord = (offset, shift, distance) => {
   switch(offset) {
     case 0:
@@ -20,6 +26,9 @@ const calcCoord = (offset, shift, distance) => {
       return -distance-shift;
   }
 }
+
+
+const wait = (timeout) => new Promise(resolve => setTimeout(resolve, timeout));
 
 class GameEngine {
   constructor() {
@@ -38,12 +47,21 @@ class GameEngine {
     window.removeEventListener(`keyup`, this._keyboardInputHandler);
 
     this._initCells();
+    this._viewUpdater(this._cells.slice());
 
     window.addEventListener(`keyup`, this._keyboardInputHandler);
     console.log(`Initializing game`, size, serverURL);
+    this._gameStatus = GameStatus.PLAYING;
+
+    this._viewUpdater(this._cells.slice());
 
     this._fetchServerData()
-      .then(this._appendServerData);
+      .then(this._appendServerData)
+      .catch((err) => {
+        console.log(err);
+        this._gameStatus = GameStatus.NETWORK_ERROR;
+        this._viewUpdater(this._cells.slice());
+      });
   }
 
   _initCells() {
@@ -165,11 +183,44 @@ class GameEngine {
     }
 
     // 6. Check if possible moves
+    this._checkGameOver();
   }
 
 
   _unlockCells() {
     this._cells.forEach(cell => cell.isLocked = false);
+  }
+
+
+  _checkGameOver() {
+    const isMovesAvail = this._cells
+      .reduce((acc, cell) => {
+        return acc || this._checkAvailNeighbours(cell);
+      }, false);
+
+    if (!isMovesAvail) {
+      this._gameStatus = GameStatus.GAME_OVER;
+      this._viewUpdater(this._cells);
+    }
+  }
+
+  _checkAvailNeighbours(cell) {
+    const directions = Object.values(Direction);
+    return directions.reduce((acc, dir) => {
+      const neighbourCell = this._findCell({
+        x: cell.x + dir.x,
+        y: cell.y + dir.y,
+        z: cell.z + dir.z,
+      });
+
+      if (neighbourCell) {
+        return acc
+          || (neighbourCell.value === 0)
+          || (neighbourCell.value === cell.value);
+      }
+
+      return acc;
+    }, false);
   }
 
 
@@ -179,6 +230,10 @@ class GameEngine {
 
   getNonEmptyCells() {
     return this._cells.filter(cell => cell.value && cell.value > 0);
+  }
+
+  getStatus() {
+    return this._gameStatus;
   }
 }
 

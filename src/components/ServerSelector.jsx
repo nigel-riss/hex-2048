@@ -4,7 +4,8 @@ import React from 'react';
 const ServerSelector = (props) => {
   const {
     onServerSelect,
-    servers
+    servers,
+    defaultServer,
   } = props;
 
   return (
@@ -16,12 +17,13 @@ const ServerSelector = (props) => {
           const serverURL = e.currentTarget.value;
           onServerSelect(serverURL);
         }}
+        defaultValue={servers[defaultServer].url}
       >
         {Object.keys(servers).map(id => (
           <option
             id={id}
-            value={servers[id].url}
             key={id}
+            value={servers[id].url}
           >
             {servers[id].title}
           </option>

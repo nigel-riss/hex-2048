@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Servers} from '../utils/const.js';
+import {
+  Servers,
+  DEFAULT_SERVER,
+} from '../utils/const.js';
 import ServerSelector from './ServerSelector.jsx';
 import LevelSelector from './LevelSelector.jsx';
 import GridLayout from './GridLayout.jsx';
@@ -12,8 +15,7 @@ const Game = (props) => {
   } = props;
 
   const [cells, setCells] = useState([]);
-  const [serverUrl, setServerUrl] = useState(Servers[`localhost`].url);
-  // const [serverUrl, setServerUrl] = useState(Servers[`remote`].url);
+  const [serverUrl, setServerUrl] = useState(Servers[DEFAULT_SERVER].url);
 
   useEffect(() => {
     gameEngine.init(size, setCells, serverUrl);
@@ -34,7 +36,14 @@ const Game = (props) => {
           onServerSelect={(serverUrl) => {
             setServerUrl(serverUrl);
           }}
+          defaultServer={DEFAULT_SERVER}
         />
+      </div>
+
+      <div>Game Status:&nbsp;
+        <span data-status={gameEngine.getStatus()}>
+          {gameEngine.getStatus()}
+        </span>
       </div>
     </header>
 

@@ -12,9 +12,12 @@ const Servers = {
   },
 };
 
+const DEFAULT_SERVER = `localhost`;
+
 
 export {
   FONT_SIZE_RATIO,
   GAME_FIELD_WIDTH,
   Servers,
+  DEFAULT_SERVER,
 };

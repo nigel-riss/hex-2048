@@ -51,6 +51,7 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .server-selector {
@@ -71,6 +72,8 @@ p {
 .level-selector {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  margin-right: 2rem;
 }
 
 .level-selector p {
