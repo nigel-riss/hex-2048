@@ -21,14 +21,13 @@ const calcCoord = (offset, shift, distance) => {
   }
 }
 
-const wait = (timeout) => new Promise(resolve => setTimeout(resolve, timeout));
-
 class GameEngine {
   constructor() {
     this._cells = null;
     this._size = null;
     this._viewUpdater = null;
     this._serverURL = null;
+    this._canInput = false;
   }
 
   init(size, viewUpdater, serverURL) {
@@ -43,7 +42,8 @@ class GameEngine {
     window.addEventListener(`keyup`, this._keyboardInputHandler);
     console.log(`Initializing game`, size, serverURL);
 
-    this._fetchServerData();
+    this._fetchServerData()
+      .then(this._appendServerData);
   }
 
   _initCells() {
@@ -61,6 +61,7 @@ class GameEngine {
               y,
               z,
               value: 0,
+              isLocked: false,
             });
           }
         }
@@ -77,44 +78,36 @@ class GameEngine {
     }
   }
 
-  findCell({x, y, z}) {
+  _findCell({x, y, z}) {
     return this._cells
       .find(cell => cell.x === x && cell.y === y && cell.z === z);
   }
 
-  getCells() {
-    return this._cells;
-  }
-
-  _getNonEmptyCells() {
-    return this._cells.filter(cell => cell.value && cell.value > 0);
-  }
-
-  getSize() {
-    return this._size;
-  }
-
   _fetchServerData() {
-    postData(this._serverURL, this._size, this._getNonEmptyCells())
-      .then((response) => {
-        console.log(response);
-        response.forEach(cell => {
-          const currCell = this.findCell(cell);
-          if (currCell.value === 0) {
-            currCell.value = cell.value;
-          }
-        });
-        this._viewUpdater(this._cells.slice());
-      });
+    return postData(this._serverURL, this._size, this.getNonEmptyCells());
   }
 
+  _appendServerData = (response) => {
+    console.log(response);
+    response.forEach(cell => {
+      const currCell = this._findCell(cell);
+      if (currCell.value === 0) {
+        currCell.value = cell.value;
+      }
+    });
+    this._viewUpdater(this._cells.slice());
+    this._canInput = true;
+  }
 
   turn(direction) {
     // 1. Wait input
+    if (!this._canInput) {return}
+
     const dirCoords = (Direction[direction]);
+    let isValidMove = false;
 
     // 2. Shift cells
-    for (let i = 0; i < this._size * 2 - 1; i++) {
+    for (let i = 0; i < this._size * 2; i++) {
       for (let q = this._size - 1; q > -this._size; q--) {
         for (let r = this._size - 1; r > - this._size; r--) {
           const coords = {
@@ -122,7 +115,7 @@ class GameEngine {
             y: calcCoord(dirCoords.y, r, q),
             z: calcCoord(dirCoords.z, r, q),
           };
-          const currentCell = this.findCell(coords);
+          const currentCell = this._findCell(coords);
           if (!currentCell) { continue }
 
           const neightbourCoords = {
@@ -130,40 +123,62 @@ class GameEngine {
             y: currentCell.y - dirCoords.y,
             z: currentCell.z - dirCoords.z,
           }
-          const neightbourCell = this.findCell(neightbourCoords);
+          const neightbourCell = this._findCell(neightbourCoords);
           if (!neightbourCell) { continue }
 
-          if (currentCell.value === 0 && neightbourCell.value !== 0) {
-            currentCell.value = neightbourCell.value;
-            neightbourCell.value = 0;
+          if (currentCell.value === neightbourCell.value && currentCell.value !== 0) {
+            if (!currentCell.isLocked && !neightbourCell.isLocked) {
+              console.log(currentCell, neightbourCell);
+              currentCell.value += neightbourCell.value;
+              currentCell.isLocked = true;
+              neightbourCell.value = 0;
+              isValidMove = true;
+            }
           }
 
-          if (currentCell.value === neightbourCell.value) {
-            currentCell.value += neightbourCell.value;
+          if (currentCell.value === 0 && neightbourCell.value !== 0) {
+            console.log(currentCell, neightbourCell);
+            currentCell.value = neightbourCell.value;
+            currentCell.isLocked = neightbourCell.isLocked;
+            neightbourCell.isLocked = false;
             neightbourCell.value = 0;
+            isValidMove = true;
           }
         }
       }
     }
 
-    this._viewUpdater(this._cells.slice());
+    if (isValidMove) {
+      this._viewUpdater(this._cells.slice());
+
+      // // 3. Request data
+      this._fetchServerData()
+        .then(this._appendServerData)
+        .then(() => {
+          // 4. Update field
+          this._viewUpdater(this._cells.slice());
     
-    // 3. Request data
-    this._fetchServerData();
-    
-    // 4. Update field
-    this._viewUpdater(this._cells.slice());
-    
-    // 5. Check if possible moves
+          // 5. Unlock cells
+          this._unlockCells();
+          this._canInput = true;
+        });
+    }
+
+    // 6. Check if possible moves
   }
 
-  _multiplyCellPos(cell, ratio) {
-    return {
-      x: cell.x * ratio,
-      y: cell.y * ratio,
-      z: cell.z * ratio,
-      value: cell.value,
-    };
+
+  _unlockCells() {
+    this._cells.forEach(cell => cell.isLocked = false);
+  }
+
+
+  getCells() {
+    return this._cells;
+  }
+
+  getNonEmptyCells() {
+    return this._cells.filter(cell => cell.value && cell.value > 0);
   }
 }
 

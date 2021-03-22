@@ -26,6 +26,13 @@ const LevelSelector = () => {
       >
         4
       </Link>
+
+      <Link
+        to="#test5"
+        className="level-selector__link"
+      >
+        5
+      </Link>
     </div>
   );
 };

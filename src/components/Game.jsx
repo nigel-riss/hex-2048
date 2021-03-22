@@ -13,6 +13,7 @@ const Game = (props) => {
 
   const [cells, setCells] = useState([]);
   const [serverUrl, setServerUrl] = useState(Servers[`localhost`].url);
+  // const [serverUrl, setServerUrl] = useState(Servers[`remote`].url);
 
   useEffect(() => {
     gameEngine.init(size, setCells, serverUrl);
